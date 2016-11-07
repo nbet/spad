@@ -1,0 +1,140 @@
+{% extends "base_logged_2.html" %}
+
+{% macro render_field(field, label_visible=true) -%}
+     <div class="form-group {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }}" id="form-group-{{ field.name }}">
+        {% if field.type != 'HiddenField' and label_visible %}
+            {{ field.label(class_='col-sm-2 control-label') }}
+        {% endif %}
+        <div class="col-sm-10 input-group">
+          {{ field(class_='form-control', **kwargs) }}
+          {% if field.errors %}
+              {% for e in field.errors %}
+                  <span class="help-block">{{ e }}</span>
+              {% endfor %}
+          {% endif %}
+        </div>
+    </div>
+{%- endmacro %}
+
+{% block page %}
+<div id="page-wrapper">
+
+<div class="row">
+  <div class="col-lg-12">    
+    <ol class="breadcrumb">
+      <li><a href="{{ url_for('index_2') }}"><i class="fa fa-dashboard"></i> SumPad</a></li>
+      <li class="active"><i class="fa fa-terminal"></i> Edit Parameter</li>
+    </ol>
+  </div>
+</div><!-- /.row -->
+
+  <div class="row">
+    <h2>Edit Parameter</h2>
+    <div class="col-lg-12">
+      <form method="POST" class="form-horizontal" role="form" action="{{ url_for('edit_parameter', name=form.name.data) }}" id="edit_parameter_form">
+        {{ form.csrf_token }}
+        {{ render_field(form.name) }}
+        {{ render_field(form.project_name) }}
+      <div id="param-fieldset" data-toggle="fieldset" class="col-sm-offset-2">
+		<h4>fields</h4>
+		<table class="table" id="parameters_table">
+		<thead class="white-header">
+			<tr>
+			<th class='col-md-3'>Name</th>
+			<th class='col-md-3'>Description</th>
+			<th class='col-md-1 ca'>Actions</th>
+			</tr>
+		</thead>
+		<tbody id="rows">
+		<!--
+			<tr class="fields ", id='template_0'>
+			<td><input class="form-control" id="template_parameters_attributes_0" name="template_parameters_attributes[0]" placeholder="Parameter Name" type="text" value="" /></td>
+			<td><a href="#" onclick="delParameter('template_0'); return false;" title="Remove Parameter"><span class="pficon pficon-close "></span> remove</a></td>
+			</tr>
+		-->
+			{% for field in form.fields %}
+			<tr class="fields ", data-toggle="fieldset-entry">
+			<td>{{ field.param_name(class="form-control" ) }}</td>
+			<td>{{ field.param_description(class="form-control" ) }}</td>
+			<td><a href="#" data-toggle="fieldset-remove-row" id="param-{{loop.index0}}-remove"><span class="pficon pficon-close "></span> remove</a></td>
+			</tr>
+			{% endfor %}
+		</tbody>
+		</table>
+			<!--<a class="btn btn-small btn-primary" href="#" onclick="addParameter()" target="#template_parameters_table tbody">+ Add Parameter</a>-->
+			<button type="button" class="btn btn-small btn-primary" data-toggle="fieldset-add-row" data-target="#param-fieldset">Add Parameter</button>
+		</div>
+		<div>&nbsp;</div>
+		<div>&nbsp;</div>
+		<div>&nbsp;</div>
+		<div class="form-group" id="submit">
+			<div class="col-sm-offset-2 col-sm-10">
+				<button type="submit" class="btn btn-success">Save parameter</button>
+			</div>
+		</div>
+	  </form>
+    </div>
+  </div><!-- /.row -->
+</div><!-- /.row -->
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+     console.log("hit.........1.........")
+    $("div[data-toggle=fieldset]").each(function() {
+        var $this = $(this);
+        console.log("hit.......2...........")
+        console.log($this.find("button[data-toggle=fieldset-add-row]"))
+        //Add new entry
+        $this.find("button[data-toggle=fieldset-add-row]").click(function() {
+            console.log("hit................3.................")
+            var target = $($(this).data("target"))
+            console.log(target);
+            var oldrow = target.find("[data-toggle=fieldset-entry]:last");
+            console.log("----------------->")
+            console.log(oldrow)
+            console.log("<-----------------")
+            console.log(oldrow.length)
+            console.log("<<-----------------")
+            if (oldrow.length > 0 ){
+                var row = oldrow.clone(true, true);
+                console.log(row.find(":input")[0]);
+                var elem_id = row.find(":input")[0].id;
+                var elem_num = parseInt(elem_id.replace(/.*-(\d{1,4})-.*/m, '$1')) + 1;
+                row.attr('data-id', elem_num);
+                row.find(":input").each(function() {
+                    console.log(this);
+                    var id = $(this).attr('id').replace('-' + (elem_num - 1) + '-', '-' + (elem_num) + '-');
+                    $(this).attr('name', id).attr('id', id).val('').removeAttr("checked");
+                });
+                oldrow.after(row);
+            }else{
+                //contruct first one
+                newTr = "<tr class=\"fields \", data-toggle=\"fieldset-entry\">"
+	                  + "<td><input class=\"form-control\" id=\"fields-0-param_name\" name=\"fields-0-param_name\" type=\"text\" value=\"\"></td>"
+	                  + "<td><input class=\"form-control\" id=\"fields-0-param_description\" name=\"fields-0-param_description\" type=\"text\" value=\"\"></td>"
+                      + "<td><a href=\"#\" onclick=\"deltr(this);\" ><span class=\"pficon pficon-close \"></span> remove</a></td>"
+	                  +  "</tr>"
+	         document.getElementById("rows").insertAdjacentHTML("beforeEnd", newTr);
+            }
+        }); //End add new entry
+
+        //Remove row
+        $this.find("a[data-toggle=fieldset-remove-row]").click(function() {
+            console.log("hit................4.................")
+            console.log($this.find("[data-toggle=fieldset-entry]").length)
+            console.log($this.find("[data-toggle=fieldset-entry]"))
+            //if($this.find("[data-toggle=fieldset-entry]").length > 1) {
+                var thisRow = $(this).closest("[data-toggle=fieldset-entry]");
+                thisRow.remove();
+            //}
+        }); //End remove row
+    });
+});
+
+function deltr(dela){
+    $(dela).parents("tr").remove();
+};
+</script>
+{% endblock %}

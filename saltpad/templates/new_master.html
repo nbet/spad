@@ -1,0 +1,102 @@
+{% extends "base_logged_2.html" %}
+
+{% macro render_field(field, label_visible=true) -%}
+     <div class="form-group {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }}" id="form-group-{{ field.name }}">
+        {% if field.type != 'HiddenField' and label_visible %}
+            {{ field.label(class_='col-sm-2 control-label') }}
+        {% endif %}
+        <div class="col-sm-10 input-group">
+          {{ field(class_='form-control', **kwargs) }}
+          {% if field.errors %}
+              {% for e in field.errors %}
+                  <span class="help-block">{{ e }}</span>
+              {% endfor %}
+          {% endif %}
+        </div>
+    </div>
+{%- endmacro %}
+
+{% block page %}
+<div id="page-wrapper">
+
+<div class="row">
+  <div class="col-lg-12">    
+    <ol class="breadcrumb">
+      <li><a href="{{ url_for('index') }}"><i class="fa fa-dashboard"></i> SaltPad</a></li>
+      <li class="active"><i class="fa fa-terminal"></i> New Master</li>
+    </ol>
+  </div>
+</div><!-- /.row -->
+
+  <div class="row">
+    <h2>New Master</h2>
+    <div class="col-lg-12">
+      <form method="POST" class="form-horizontal" role="form" action="{{ url_for('new_master') }}" id="new_master_form">
+        {{ form.csrf_token }}
+        
+        <div class="form-group  " id="form-group-name">        
+            <label class="col-sm-2 control-label" for="name">Master Name</label>        
+            <div class="col-sm-10 input-group">
+                <input class="form-control" id="name" name="name" type="text" value="">
+            </div>
+        </div>
+	    
+		<div class="form-group  " id="form-group-api">        
+            <label class="col-sm-2 control-label" for="api_url">API URL</label>        
+            <div class="col-sm-10 input-group">
+                <input class="form-control" id="api_url" name="api_url" type="text" value="">
+            </div>
+        </div>
+		
+		<div class="form-group  " id="form-group-user">        
+            <label class="col-sm-2 control-label" for="salt_user">Salt User</label>        
+            <div class="col-sm-10 input-group">
+                <input class="form-control" id="salt_user" name="salt_user" type="text" value="">
+            </div>
+        </div>
+		
+		
+		<div class="form-group  " id="form-group-password">        
+            <label class="col-sm-2 control-label" for="salt_password">Salt Password</label>        
+            <div class="col-sm-10 input-group">
+                <input class="form-control" id="salt_password" name="salt_password" type="password" value="">
+            </div>
+        </div>
+		
+		<div class="form-group  " id="form-group-eauth">        
+            <label class="col-sm-2 control-label" for="eauth">EAuth</label>        
+			<div class="col-sm-10 input-group">
+            <select class="form-control" id="eauth" name="eauth">
+			       <option value="pam">pam</option>
+		    </select>
+			</div>
+        </div>
+		
+		<div class="form-group  " id="form-group-ssl">        
+            <label class="col-sm-2 control-label" for="ssl">Verify SSL</label>        
+			<div class="col-sm-10 input-group">
+            <select class="form-control" id="ssl" name="ssl">
+			       <option value="True">True</option>
+				   <option value="False">False</option>
+		    </select>
+			</div>
+        </div>
+		
+		{{ render_field(form.project_name) }}
+		
+		
+        <div class="form-group" id="submit">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-success">Submit</button>
+            <a href="{{ url_for('masters') }}"><button type="button" class="btn btn-default">Cancel</button></a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div><!-- /.row -->
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

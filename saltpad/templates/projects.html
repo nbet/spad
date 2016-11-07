@@ -1,0 +1,67 @@
+{% extends "base_logged_2.html" %}
+
+{% block page %}
+
+<div id="page-wrapper">
+
+
+<div class="row">
+  <div class="col-lg-12">    
+    <ol class="breadcrumb">
+
+      <li><a href="{{ url_for('index_2') }}"><i class="fa fa-dashboard"></i> SumPad</a></li>
+
+      <li class="active"><i class="fa fa-check-square"></i> Projects</li>
+    </ol>
+  </div>
+</div><!-- /.row -->
+
+<div class="row">
+  <div class="col-lg-12">
+    <h2>Projects <a href="{{ url_for('new_project') }}"><button type="button" class="btn btn-success">New Project</button></a></h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover tablesorter" id="projects">
+        <thead>
+          <tr>
+            <th>Projects</i></th>
+            <th>Description</i></th>
+
+			<th>Actions</i></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for project in projects %}
+          <tr>
+            <td><a href="{{ url_for('project_details', name=project.name) }}">{{ project.name }}</a></td>
+            <td>{{ project.description }}</td>
+
+			<td>
+			<div class="btn-group">
+			<span class="btn btn-sm btn-default"><a data-id="project_{{project.name}}_edit" href="/projects/{{ project.name}}/edit">Edit</a></span>
+			<a class="btn btn-default btn-sm dropdown-toggle" data-id="aid_not_defined" data-toggle="dropdown" href="#">
+			<span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu pull-right">
+			<li><a href="/projects/{{ project.name }}/delete" rel="nofollow">Delete</a></li>
+			</ul>
+			</div>
+			</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+
+</div><!-- /.row -->
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}
+

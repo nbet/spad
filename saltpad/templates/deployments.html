@@ -1,0 +1,243 @@
+{% extends "base_logged_2.html" %}
+{% block page %}
+<div id="page-wrapper">
+
+<div class="row">
+  <div class="col-lg-12">
+    <ol class="breadcrumb">
+      <li><a href="{{ url_for('index_3') }}"><i class="fa fa-dashboard"></i> SaltPad</a></li>
+      <li class="active"><i class="fa fa-rocket"></i> Project Deployments</li>
+    </ol>
+  </div>
+</div><!-- /.row -->
+
+<div class="row">
+  <div class="col-lg-12">
+    <h2>Project Deployments</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover tablesorter" id="minions">
+        <thead>
+          <tr>
+            <th>Project</i></th>
+            <th>Environment</i></th>
+            <th>Services</th>
+            <th>Parameter</th>
+            <th>Minion</th>
+            <th>Action</i></th>
+          </tr>
+        </thead>
+        <tbody>
+         
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+</div><!-- /.row -->
+
+<!-- form -->
+<form accept-charset="UTF-8" action="/hosts/qbtarget" class="form-horizontal well" data-id="2" data-submit="progress_bar" data-type-changed="false" id="edit_host_2" method="post">
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+  <li role="presentation"  class="active"><a href="#environment" role="tab" data-toggle="tab">Environment</a></li>
+  <li role="presentation"><a href="#services" role="tab" data-toggle="tab">Services</a></li>
+  <li role="presentation"><a href="#parameter" role="tab" data-toggle="tab">Parameter</a></li>
+  <li role="presentation"><a href="#minion" role="tab" data-toggle="tab">Minion</a></li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="environment">
+      <!-- 1. select project & environment -->
+	  <label class="col-sm-2 control-label" for="project_select">Project</label>        
+	  <div class="col-sm-4 input-group">
+		<select class="form-control" id="project_select" name="project_select" data-url="/project_selected" onchange="project_changed(this)">
+			{% for project in projects %}
+			<option value="{{ project.name }}">{{ project.name}}</option>
+			{% endfor %}
+		</select>
+	  </div>
+	  <label class="col-sm-2 control-label" for="environment_select">Environment</label>        
+	  <div class="col-sm-4 input-group">
+		<select class="form-control" id="environment_select" name="environment_select" data-url="/environment_selected" onchange="environment_changed(this)">
+		</select>
+	  </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div role="tabpanel" class="tab-pane" id="services">
+      <!-- 2. select services to deploy -->
+
+
+    <div id="state_selector" style="visibility: block;">
+    <div class="row">
+       <div class="col-md-3">
+         <label for="available_services">Available Services:</label>
+       <select id = "available_services" name = "available_services" class="selectpicker" data-live-search="true"  onchange="service_selected(this)"size="12" style="width:90%">
+       </select>
+       </div>
+        <div class="col-md-3">
+         <label for="selected_services">Selected Services:</label>
+         <select id="selected_services"  name="selected_services" onchange="service_unselected(this)" size="12" style="width:90%">
+         </select>
+       </div>
+     </div>
+     </div>
+     <div id="no_env" style="visibility: hidden;">
+        <div class="alert alert-block alert-warning">Please select a Salt environment first</div>
+      </div>
+
+
+  </div>
+
+  <div role="tabpanel" class="tab-pane" id="parameter">
+
+      <!-- 3. parameter -->
+	  <label class="col-sm-2 control-label" for="parameter_select">Parameter</label>
+	  <div class="col-sm-4 input-group">
+		<select class="form-control" id="parameter_select" name="minion_select" data-url="/parameter_selected" onchange="parameter_changed(this)">
+		</select>
+	  </div>
+
+  </div>  
+  <div role="tabpanel" class="tab-pane" id="minion">
+      <!-- 4. select target -->
+      <label class="col-sm-2 control-label" for="minion_select">Minion</label>
+	  <div class="col-sm-4 input-group">
+		<select class="form-control" id="minion_select" name="minion_select" data-url="/minion_selected" onchange="minion_changed(this)">
+		</select>
+	  </div>
+  </div>
+</div>
+<div class="form-actions">
+  <a class="btn btn-default" data-id="aid_hosts_qbtarget" href="/hosts/qbtarget">Cancel</a> 
+  <input class="btn btn-primary remove_form_templates" data-id="aid_update_host_managed" name="commit" type="submit" value="Submit" />
+</div>
+
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+  $("#minions").dataTable({
+    "order": [[1, "desc"]],
+    "lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]],
+    "columnDefs": [
+      { "orderable": false, "targets": -1 }
+    ]
+  });
+});
+
+
+function project_changed(element) {
+  var project_name = $("#project_select").val();
+  var data = 'project=' + project_name;
+  console.log("--->" + data)
+
+  var url = "/get_available_environments";
+  $.ajax({
+    type: 'get',
+    url:  url,
+    data: data,
+    success: function(request) {
+      $('#environment_select').html(request);
+    },
+    complete: function() {
+
+    }
+  });
+
+  url = "/get_available_parameters";
+  $.ajax({
+    type: 'get',
+    url:  url,
+    data: data,
+    success: function(request) {
+      $('#parameter_select').html(request);
+    },
+    complete: function() {
+
+    }
+  });
+
+  url = "/get_available_minions";
+  $.ajax({
+    type: 'get',
+    url:  url,
+    data: data,
+    success: function(request) {
+      $('#minion_select').html(request);
+    },
+    complete: function() {
+
+    }
+  });
+}
+
+function environment_changed(element) {
+  var environment_name = $("#environment_select").val();
+  var data = 'environment=' + environment_name;
+  console.log("--->" + url)
+
+  var url = "/get_available_services";
+  $.ajax({
+    type: 'get',
+    url:  url,
+    data: data,
+    success: function(request) {
+      console.log("--->" + request)
+      $('#available_services').html(request);
+    },
+    complete: function() {
+
+    }
+  });
+
+}
+
+
+function service_selected(element) {
+  var s = $("#available_services").val();
+  console.log("--->" + s);
+  $("#selected_services").append($("#available_services").find("option:selected"))
+  $("#available_services").find("option:selected").remove()
+}
+
+function service_unselected(element) {
+  var s = $("#selected_services").val();
+  console.log("--->" + s);
+  $("#available_services").append($("#selected_services").find("option:selected"))
+  $("#selected_services").find("option:selected").remove()
+}
+
+function parameter_changed(element) {
+  var s = $("#parameter_select").val();
+  console.log("--->" + s);
+
+}
+
+function minion_changed(element) {
+  var s = $("#minion_select").val();
+  console.log("--->" + s);
+
+}
+
+</script>
+{% endblock %}

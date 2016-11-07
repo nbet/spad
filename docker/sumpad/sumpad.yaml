@@ -1,0 +1,10 @@
+---
+:proto: http
+:host: localhost
+:port: 5000
+#:ssl_ca: "/var/lib/puppet/ssl/certs/ca.pem"
+#:ssl_key: "/var/lib/puppet/ssl/private_keys/saltqm.devops.sumscope.com.pem"
+#:ssl_cert: "/var/lib/puppet/ssl/certs/saltqm.devops.sumscope.com.pem"
+#:timeout:  10
+#:salt:  /usr/bin/salt
+#:upload_grains:  true

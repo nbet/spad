@@ -1,0 +1,70 @@
+#!/usr/bin/python
+
+import sys, os
+from urllib2 import urlopen
+import yaml
+from os.path import join, dirname
+
+
+def sumpad_config():
+  config = {}
+  settings_file = '/etc/sumpad/sumpad.yaml'
+  f = open(settings_file)
+  config = yaml.load(f)
+  f.close()
+  return config
+
+
+def sumpad_url():
+  config = {}
+  config = sumpad_config()
+  return "%s://%s:%s" %(config[':proto'],config[':host'],config[':port'])
+
+
+def url(minion):
+  spad_url = sumpad_url()
+  url="%s/snode/%s" %(spad_url,minion)
+  return url
+
+
+def generate_state_file(path, state_files):
+
+    if not os.path.exists(path):
+        os.makedirs(path)
+    for (k,v) in state_files.items():
+        path2 = join(path, k)
+        if not os.path.exists(path2):
+            os.makedirs(path2)
+        file = join(path2, 'init.sls')
+        open(file,'wt').write(v)
+
+
+if __name__=='__main__':
+    if len(sys.argv) <= 1:
+        print 'usage: sumpad-node <target>'
+        exit()
+    minion = sys.argv[1]
+    url = url(minion)
+    try:
+        object = urlopen(url)
+        dict_ret = eval(object.read())
+        state_files = dict_ret['state_files']
+        path = dict_ret['path']
+        generate_state_file(path, state_files)
+        dict_ret.pop('state_files')
+        dict_ret.pop('path')
+        yaml_ret = yaml.dump(dict_ret, default_flow_style=False, encoding='utf-8', allow_unicode=True)
+        print yaml_ret
+    except:
+        print 'urlopen raise error'
+        exit()
+
+
+
+
+
+
+
+
+
+

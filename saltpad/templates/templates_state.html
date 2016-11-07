@@ -1,0 +1,54 @@
+{% extends "base_logged_2.html" %}
+{% block page %}
+<div id="page-wrapper">
+
+<div class="row">
+  <div class="col-lg-12">    
+    <ol class="breadcrumb">
+      <li><a href="{{ url_for('index_2') }}"><i class="fa fa-dashboard"></i> SaltPad</a></li>
+      <li class="active"><i class="fa fa-check-square"></i> Templates state</li>
+    </ol>
+  </div>
+</div><!-- /.row -->
+
+<div class="row">
+  <div class="col-lg-12">
+    <h2>Templates <a href="{{ url_for('new_template') }}"><button type="button" class="btn btn-success">New Template</button></a></h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover tablesorter" id="templates">
+        <thead>
+          <tr>
+            <th>Templates</i></th>
+            <th>Description</i></th>
+			<th>Filename</i></th>
+			<th>Actions</i></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in tstates %}
+          <tr>
+            <td><a href="{{ url_for('display_template', name=item.name) }}">{{ item.name }}</td>
+            <td>{{ item.description }}</td>
+			<td>{{ item.filename }}</td>
+			<td>
+			<div class="btn-group">
+			<span class="btn btn-sm btn-default"><a data-id="template_{{item.name}}_edit" href="{{ url_for('edit_template', name=item.name) }}">Edit</a></span>
+			<a class="btn btn-default btn-sm dropdown-toggle" data-id="aid_not_defined" data-toggle="dropdown" href="#">
+			<span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu pull-right">
+			<li><a href="{{ url_for('delete_template', name=item.name) }}" rel="nofollow">Delete</a></li>
+			</ul>
+			</div>
+			</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+  
+</div><!-- /.row -->
+{% endblock %}
+

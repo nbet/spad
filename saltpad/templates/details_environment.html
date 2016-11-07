@@ -1,0 +1,40 @@
+
+{% extends "base_logged_2.html" %}
+
+{% block page %}
+<div id="page-wrapper">
+
+
+<div class="row">
+  <div class="col-lg-12">
+    <h1>{{ environment.name }} details</h1>
+    <ol class="breadcrumb">
+      <li><a href="{{ url_for('index_2') }}"><i class="fa fa-dashboard"></i> SumPad</a></li>
+      <li><a href="{{ url_for('environments') }}"><i class="fa fa-cloud"></i> Environments</a></li>
+      <li class="active"><i class="fa fa-tags"></i> {{ environment.name }} details</li>
+    </ol>
+  </div>
+</div><!-- /.row -->
+
+  <div class="alert alert-warning" role="alert">environment parameters.</div>
+
+  <div class="row">
+    <div class="col-lg-12">
+		<h2>Name</h2>
+		{{environment.name}}
+		<h2>Description</h2>
+		{{environment.description}}
+		<h2>Project</h2>
+		{{environment.project_name}}
+		<h2>Path</h2>
+		{{environment.path}}
+    </div>
+
+  </div><!-- /.row -->
+</div><!-- /.row -->
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base_logged_2.html" %}
+{% block page %}
+<div id="page-wrapper">
+
+<div class="row">
+  <div class="col-lg-12">
+    <h1>Templates <small>Deployments</small></h1>
+    <ol class="breadcrumb">
+      <li><a href="{{ url_for('index') }}"><i class="fa fa-dashboard"></i> SaltPad</a></li>
+      <li class="active"><i class="fa fa-rocket"></i> Templates Deployments</li>
+    </ol>
+  </div>
+</div><!-- /.row -->
+
+<div class="row">
+  <div class="col-lg-12">
+	<h2>Templates <a href="{{ url_for('add_template_state') }}"><button type="button" class="btn btn-info">Add a template</button></a></h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover tablesorter" id="templates">
+        <thead>
+          <tr>
+            <th>Name</i></th>
+            <th>Description</i></th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+		<tbody>
+          {% for key, value in dict.iteritems() %}
+          <td><a href="{{ url_for('display_template_state', name=value.name) }}">{{ value.name }}</td>
+          <td>{{ value.description }}</td>
+		  <td><a href="{{ url_for('edit_template_state', name=value.name) }}">Edit</a></td>
+		  <td><a href="{{ url_for('delete_template_state', name=value.name) }}">Delete</a></td>		  
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+</div><!-- /.row -->
+{% endblock %}
+

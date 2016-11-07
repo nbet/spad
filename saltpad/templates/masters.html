@@ -1,0 +1,78 @@
+{% extends "base_logged_2.html" %}
+{% block page %}
+<div id="page-wrapper">
+
+<div class="row">
+  <div class="col-lg-12">    
+    <ol class="breadcrumb">
+      <li><a href="{{ url_for('index_2') }}"><i class="fa fa-dashboard"></i> SumPad</a></li>
+      <li class="active"><i class="fa fa-check-square"></i> Masters</li>
+    </ol>
+  </div>
+</div><!-- /.row -->
+
+<div class="row">
+  <div class="col-lg-12">
+    <h2>Masters <a href="{{ url_for('new_master') }}"><button type="button" class="btn btn-success">New Master</button></a></h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover tablesorter" id="masters">
+        <thead>
+          <tr>
+            <th>Masters</i></th>
+            <th>API URL</i></th>
+            <th>Salt User</th>
+            <th>Salt Password</th>
+            <th>EAuth</th>
+            <th>VERIFY_SSL</i></th>
+            <th>Status</i></th>
+			<th>Actions</i></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for master in masters %}
+          {% if master.status == "True" -%}
+          <tr class="success">
+          {% else -%}
+          <tr class="danger">
+          {% endif -%}
+            <td><a href="{{ url_for('master_details', name=master.name) }}">{{ master.name }}</a></td>
+            <td>{{ master.api_url }}</td>
+            <td>{{ master.salt_user }}</td>
+            <td>******</td>
+            <td>{{ master.eauth }}</td>
+            <td>{{ master.ssl }}</td>
+            <td>{{ master.status }}</td>
+			<td>
+			<div class="btn-group">
+			<span class="btn btn-sm btn-default"><a data-id="master_{{master.name}}_edit" href="/masters/{{ master.name}}/edit">Edit</a></span>
+			<a class="btn btn-default btn-sm dropdown-toggle" data-id="aid_not_defined" data-toggle="dropdown" href="#">
+			<span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu pull-right">
+			<li><a href="/masters/{{ master.name }}/delete" rel="nofollow">Delete</a></li>
+			</ul>
+			</div>
+			</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+</div><!-- /.row -->
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+  $("#masters").dataTable({
+    "order": [[1, "desc"]],
+    "lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]],
+    "columnDefs": [
+      { "orderable": false, "targets": -1 }
+    ]
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+
+{% extends "base_logged_2.html" %}
+
+{% block page %}
+<div id="page-wrapper">
+
+
+<div class="row">
+  <div class="col-lg-12">
+    <h1>{{ project.name }} details</h1>
+    <ol class="breadcrumb">
+      <li><a href="{{ url_for('index_2') }}"><i class="fa fa-dashboard"></i> SumPad</a></li>
+      <li><a href="{{ url_for('projects') }}"><i class="fa fa-cloud"></i> Projects</a></li>
+      <li class="active"><i class="fa fa-tags"></i> {{ project.name }} details</li>
+    </ol>
+  </div>
+</div><!-- /.row -->
+
+  <div class="alert alert-warning" role="alert">Project parameters.</div>
+
+  <div class="row">
+    <div class="col-lg-12">
+		<h2>Name</h2>
+		{{project.name}}
+		<h2>Description</h2>
+		{{project.description}}
+		<h2>Master</h2>
+		{{project.master.name}}
+		<h2>Services</h2>
+		{% for service in project.services %}
+		{{service.name}}
+		{% endfor %}
+		<h2>Environments</h2>
+		{% for environment in project.environments %}
+		{{environment.name}}: {{environment.path}}
+		{% endfor %}
+		<h2>Parameters</h2>
+		{% for parameter in project.parameters %}
+		{{parameter.name}}
+		{{parameter.env}}
+		<h4>Content</h4>
+			{% for field in parameter.fields %}
+				{{field.param_name}}: {{field.param_description}}
+			{% endfor %}
+		{% endfor %}
+    </div>
+
+  </div><!-- /.row -->
+</div><!-- /.row -->
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

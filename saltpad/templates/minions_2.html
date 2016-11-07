@@ -1,0 +1,85 @@
+{% extends "base_logged_2.html" %}
+{% block page %}
+<div id="page-wrapper">
+
+<div class="row">
+  <div class="col-lg-12">    
+    <ol class="breadcrumb">
+      <li><a href="{{ url_for('index_2') }}"><i class="fa fa-dashboard"></i> SaltPad</a></li>
+      <li class="active"><i class="fa fa-check-square"></i> Minions</li>
+    </ol>
+  </div>
+</div><!-- /.row -->
+
+<div class="row">
+  <div class="col-lg-12">
+    <h2>Minions <a href="{{ url_for('refresh_minions') }}"><button id="refresh_minions" type="button" class="btn btn-success" onclick="fresh_clicked(this)">Refresh</button></a></h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover tablesorter" id="minions">
+        <thead>
+          <tr>
+            <th>Name</i></th>
+            <th>Master</i></th>            
+            <th>Operating system</th>
+            <th>Environment</th>
+            <th>Last report</i></th>
+            <th>Status</i></th>
+			<th>Actions</i></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for minion in minions %}
+          {% if minion.status == "True" -%}
+          <tr class="success">
+          {% else -%}
+          <tr class="danger">
+          {% endif -%}
+
+		    <td><a href="{{ url_for('minion_details_2', master_name = minion.master, minion_name=minion.name) }}">{{ minion.name }}</a></td>
+            <td>{{ minion.master }}</td>
+            <td>{{ minion.os }}</td>            
+            <td>{{ minion.environment }}</td>
+            <td>{{ minion.last_report }}</td>
+            <td>{{ minion.status }}</td>
+			<td>
+			<div class="btn-group">
+			<span class="btn btn-sm btn-default"><a data-id="minion_{{minion.name}}_edit" href="/minions/{{ minion.name}}/edit">Edit</a></span>
+			<a class="btn btn-default btn-sm dropdown-toggle" data-id="aid_not_defined" data-toggle="dropdown" href="#">
+			<span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu pull-right">
+			<li><a href="/minions/{{ minion.name }}/delete" rel="nofollow">Delete</a></li>
+			</ul>
+			</div>
+			</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+</div><!-- /.row -->
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+$(function() {
+  $("#minions").dataTable({
+    "order": [[1, "desc"]],
+    "lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]],
+    "columnDefs": [
+      { "orderable": false, "targets": -1 }
+    ]
+  });
+});
+
+
+function fresh_clicked(element) {
+    var btn = $("#refresh_minions");
+    btn.prop('disabled', true);
+    console.log("button disabled")
+}
+
+</script>
+{% endblock %}
